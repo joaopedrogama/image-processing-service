@@ -1,24 +1,18 @@
 name: image-processing-system
 
 services:
-  orchestrator:
+  image_processing_service:
     build:
       context: .
       args:
         MODE: development
     environment:
       MODE: development
-      BASE_URL: http://localhost:8000
-      LOGS_ROOT: /var/log/orchestrator/
-      STATIC_ROOT: /var/www/orchestrator/static/
-      MEDIA_ROOT: /var/www/orchestrator/media/
-    env_file:
-    - ./envs/postgres.env
+      BASE_URL: http://localhost:8001
+      LOGS_ROOT: /var/log/image_processing_service/
+      STATIC_ROOT: /var/www/image_processing_service/static/
+      MEDIA_ROOT: /var/www/image_processing_service/media/
     volumes:
       - ./app/:/usr/src/app/
     ports:
-      - 8000:8000
-
-  postgres:
-    env_file:
-      - ./envs/postgres.env
+      - 8001:8001

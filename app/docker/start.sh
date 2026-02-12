@@ -14,11 +14,6 @@ if ! [ -z "$MEDIA_ROOT" ]; then
     mkdir -p "$MEDIA_ROOT"
 fi
 
-until PGPASSWORD="$POSTGRES_PASSWORD" psql -h "$POSTGRES_HOST" -U "$POSTGRES_USER" -d "$POSTGRES_DATABASE" -c "\q" 1>/dev/null 2>&1; do
-    echo "Postgres is unavailable, waiting..."
-    sleep 5
-done
-
 if [ "$MODE" = "development" ]; then
     echo "Creating migrations..."
     python manage.py makemigrations --noinput
@@ -31,9 +26,9 @@ echo "Migrations applied"
 
 if [ "$MODE" != "development" ]; then
     echo "Copying default media..."
-    mkdir -p "/var/www/orchestrator/media/"
+    mkdir -p "/var/www/image_processing_service/media/"
     if [ -d "/usr/src/app/main/media/" ]; then
-        cp -a "/usr/src/app/main/media/." "/var/www/orchestrator/media/"
+        cp -a "/usr/src/app/main/media/." "/var/www/image_processing_service/media/"
     fi
     echo "Finished copying default media"
 
@@ -43,18 +38,18 @@ if [ "$MODE" != "development" ]; then
 fi
 
 echo "Starting Memcache..."
-mkdir -p "/var/run/orchestrator"
+mkdir -p "/var/run/image_processing_service"
 memcached -a 0700 -u root \
-    -s "/var/run/orchestrator/memcached.sock" \
+    -s "/var/run/image_processing_service/memcached.sock" \
     1>>"$LOGS_ROOT/memcached.log" 2>&1 &
 echo "Memcache started"
 
-echo "Starting Orchestrator as `whoami`"
+echo "Starting Image Processing Service as `whoami`"
 if [ "$MODE" = "development" ]; then
-    python -m uvicorn config.asgi:application --reload --host 0.0.0.0 --port 8000
+    python -m uvicorn config.asgi:application --reload --host 0.0.0.0 --port 8001
 else
     exec gunicorn "config.asgi:application" \
-        --name "orchestrator" \
+        --name "image_processing_service" \
         --bind "0.0.0.0:8000" \
         --workers "$NUM_GUNICORN_WORKERS" \
         --worker-class uvicorn.workers.UvicornWorker \
