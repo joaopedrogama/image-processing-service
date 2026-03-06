@@ -199,8 +199,8 @@ STORAGES = {
         "BACKEND": "django_minio_backend.models.MinioBackend",
         "OPTIONS": {
             "MINIO_ENDPOINT": "minio:9000",
-            "MINIO_EXTERNAL_ENDPOINT": "external.min.io",
-            "MINIO_EXTERNAL_ENDPOINT_USE_HTTPS": True,
+            "MINIO_EXTERNAL_ENDPOINT": "localhost:9000",
+            "MINIO_EXTERNAL_ENDPOINT_USE_HTTPS": False,
             "MINIO_ACCESS_KEY": "minioadmin",
             "MINIO_SECRET_KEY": "minioadmin",
             "MINIO_USE_HTTPS": False,
