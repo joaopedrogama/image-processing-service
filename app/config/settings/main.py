@@ -1,5 +1,4 @@
-import datetime
-import logging.config
+from datetime import timedelta
 import os
 import pathlib
 
@@ -80,6 +79,7 @@ DJANGO_APPS = [
 ]
 
 THIRD_PARTY_APPS = [
+    'django_minio_backend.apps.DjangoMinioBackendConfig',
 ]
 
 LOCAL_APPS = [
@@ -181,6 +181,51 @@ IMAGE_EXTENSIONS = ['.png', '.jpg', '.jpeg']
 
 MAX_IMAGE_SIZE_MB = 8
 
+STORAGES = {
+    "staticfiles": {
+        "BACKEND": "django_minio_backend.models.MinioBackendStatic",
+        "OPTIONS": {
+            "MINIO_ENDPOINT": "play.min.io",
+            "MINIO_ACCESS_KEY": "Q3AM3UQ867SPQQA43P2F",
+            "MINIO_SECRET_KEY": "zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG",
+            "MINIO_USE_HTTPS": True,
+            "MINIO_REGION": "us-east-1",
+            "MINIO_URL_EXPIRY_HOURS": timedelta(days=1),  # Default is 7 days (longest) if not defined
+            "MINIO_CONSISTENCY_CHECK_ON_START": True,
+            "MINIO_STATIC_FILES_BUCKET": "my-static-files-bucket",
+        },
+    },
+    "default": {
+        "BACKEND": "django_minio_backend.models.MinioBackend",
+        "OPTIONS": {
+            "MINIO_ENDPOINT": "minio:9000",
+            "MINIO_EXTERNAL_ENDPOINT": "external.min.io",
+            "MINIO_EXTERNAL_ENDPOINT_USE_HTTPS": True,
+            "MINIO_ACCESS_KEY": "minioadmin",
+            "MINIO_SECRET_KEY": "minioadmin",
+            "MINIO_USE_HTTPS": False,
+            "MINIO_REGION": "us-east-1",
+            "MINIO_PRIVATE_BUCKETS": [],
+            "MINIO_PUBLIC_BUCKETS": ['microservices-bucket'],
+            "MINIO_URL_EXPIRY_HOURS": timedelta(days=1),  # Default is 7 days (longest) if not defined
+            "MINIO_CONSISTENCY_CHECK_ON_START": False,
+            "MINIO_POLICY_HOOKS": [  # List[Tuple[str, dict]]
+                # ('django-backend-dev-private', dummy_policy)
+            ],
+            "MINIO_DEFAULT_BUCKET": "microservices-bucket",
+            "MINIO_STATIC_FILES_BUCKET": "microservices-bucket",
+            "MINIO_BUCKET_CHECK_ON_SAVE": False,
+            # (OPTIONAL) MULTIPART UPLOAD
+            "MINIO_MULTIPART_UPLOAD": False,  # False by default
+            "MINIO_MULTIPART_THRESHOLD": 10 * 1024 * 1024,  # 10MB default
+            "MINIO_MULTIPART_PART_SIZE": 10 * 1024 * 1024,  # 10MB default
+            # (OPTIONAL) URL CACHING
+            "MINIO_URL_CACHING_ENABLED": True,  # Enable URL caching (disabled by default)
+            "MINIO_URL_CACHE_TIMEOUT": 60 * 60 * 8,  # 8 hours in seconds
+            "MINIO_URL_CACHE_PREFIX": 'minio_url_',  # Prefix for cache keys
+        },
+    },
+}
 
 # Ninja
 

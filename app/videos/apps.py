@@ -1,7 +1,5 @@
 import pika
-import os
 from django.apps import AppConfig
-from videos.consumers import process_video
 import threading
 
 class VideosConfig(AppConfig):
@@ -10,6 +8,8 @@ class VideosConfig(AppConfig):
     def ready(self):
         # Define a function to run the RabbitMQ consumer
         def start_consumer():
+            from videos.consumers import process_video
+
             try:
                 # Establish connection to RabbitMQ
                 connection = pika.BlockingConnection(
