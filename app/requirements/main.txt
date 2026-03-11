@@ -12,3 +12,4 @@ whitenoise==6.11.0
 pymemcache==4.0.0
 moviepy==2.2.1
 django-minio-backend==4.5.0
+ruff==0.15.5

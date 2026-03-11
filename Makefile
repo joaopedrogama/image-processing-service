@@ -1,21 +1,22 @@
 .PHONY: install install-hooks runserver lint format
 
-install:
-	pip install -r requirements.txt
-
+docker_run_base_command := docker compose exec
+container_name := image_processing_service
 
 install-hooks:
 	pre-commit install
 
+test:
+	$(docker_run_base_command) $(container_name) python manage.py test
 
-runserver:
-	python manage.py runserver
+run:
+	$(docker_run_base_command) $(container_name) python manage.py runserver
 
+ruff:
+	$(docker_run_base_command) $(container_name) ruff check .
 
-lint:
-	flake8 .
-
+fix:
+	$(docker_run_base_command) $(container_name) ruff check --fix .
 
 format:
-	black .
-	isort .
+	$(docker_run_base_command) $(container_name) ruff format .

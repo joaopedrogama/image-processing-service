@@ -2,8 +2,9 @@ import pika
 from django.apps import AppConfig
 import threading
 
+
 class VideosConfig(AppConfig):
-    name = 'videos'
+    name = "videos"
 
     def ready(self):
         # Define a function to run the RabbitMQ consumer
@@ -14,16 +15,22 @@ class VideosConfig(AppConfig):
                 # Establish connection to RabbitMQ
                 connection = pika.BlockingConnection(
                     pika.ConnectionParameters(
-                        host='rabbitmq',
-                        credentials=pika.PlainCredentials('admin', 'admin'), # TODO - add to main.py and .env
+                        host="rabbitmq",
+                        credentials=pika.PlainCredentials(
+                            "admin", "admin"
+                        ),  # TODO - add to main.py and .env
                     )
                 )
                 channel = connection.channel()
 
                 # Start consuming messages from the queue
-                channel.basic_consume(queue='video_to_process', on_message_callback=process_video, auto_ack=True)
+                channel.basic_consume(
+                    queue="video_to_process",
+                    on_message_callback=process_video,
+                    auto_ack=True,
+                )
 
-                print('Waiting for messages. To exit press CTRL+C')
+                print("Waiting for messages. To exit press CTRL+C")
                 channel.start_consuming()
             except Exception as e:
                 print(f"Error connecting to RabbitMQ: {e}")

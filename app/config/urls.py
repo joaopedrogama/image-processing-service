@@ -4,7 +4,6 @@ from django.urls import path, re_path
 from .api import api
 from django.views.static import serve
 from django.conf import settings
-from django.conf.urls.static import static
 
 
 urlpatterns = [
@@ -15,8 +14,8 @@ urlpatterns = [
 if settings.SERVE_MEDIA:
     urlpatterns += [
         re_path(
-            r'^{}(?P<path>.*)$'.format(re.escape(settings.MEDIA_URL.lstrip('/'))),
+            r"^{}(?P<path>.*)$".format(re.escape(settings.MEDIA_URL.lstrip("/"))),
             serve,
-            kwargs={'document_root': settings.MEDIA_ROOT},
+            kwargs={"document_root": settings.MEDIA_ROOT},
         ),
     ]

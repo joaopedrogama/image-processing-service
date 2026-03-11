@@ -4,9 +4,10 @@ from videos.models import Video
 import zipfile
 from django.core.files import File
 
+
 def process_video(channel, method, properties, body):
     data = json.loads(body)
-    video = Video.objects.create(name=data['name'], video_file=data['video_file'])
+    video = Video.objects.create(name=data["name"], video_file=data["video_file"])
 
     clip = VideoFileClip(video.video_file.path)
     output_clip = "cut_video.mp4"
@@ -21,10 +22,12 @@ def process_video(channel, method, properties, body):
     clip.close()
 
     # create a zip file
-    with zipfile.ZipFile(video.zip_video_file.path, 'w') as zip_file:
+    with zipfile.ZipFile(video.zip_video_file.path, "w") as zip_file:
         zip_file.write(output_clip)
         zip_file.write(screenshot)
 
-    video.zip_video_file.save(video.zip_video_file.name, File(open(video.zip_video_file.path, 'rb')))
+    video.zip_video_file.save(
+        video.zip_video_file.name, File(open(video.zip_video_file.path, "rb"))
+    )
 
     print(f"Video created: {video}")
