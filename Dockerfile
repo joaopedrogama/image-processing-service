@@ -16,7 +16,8 @@ RUN mkdir -p \
     apt-get install --yes --no-install-recommends \
         build-essential ca-certificates gettext gnupg1 \
         libffi-dev libpq-dev libssl1.0 libxml2-dev libxmlsec1-dev libxmlsec1-openssl libxslt-dev \
-        memcached netcat-traditional postgresql-client python3-dev libmagic1 && \
+        memcached netcat-traditional postgresql-client python3-dev libmagic1 \
+        libxcb1 libx11-6 libxext6 libxrender1 libsm6 libgl1-mesa-glx libglib2.0-0 && \
     pip install --no-input --no-cache-dir --upgrade \
         pip setuptools wheel && \
     apt-get clean all && \

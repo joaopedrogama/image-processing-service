@@ -13,3 +13,4 @@ pymemcache==4.0.0
 moviepy==2.2.1
 django-minio-backend==4.5.0
 ruff==0.15.5
+opencv-python==4.13.0.92
