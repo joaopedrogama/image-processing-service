@@ -7,7 +7,6 @@ import cv2
 import tempfile
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
-from django.core.files import File
 from io import BytesIO
 from videos.models import Video
 import shutil
@@ -19,9 +18,7 @@ def process_video(channel, method, properties, body):
     try:
         data = json.loads(body)
         video = Video.objects.create(
-            id=data["id"],
-            name=data["name"],
-            video_file=data["video_file"]
+            id=data["id"], name=data["name"], video_file=data["video_file"]
         )
 
         temp_dir = tempfile.mkdtemp()
@@ -29,8 +26,8 @@ def process_video(channel, method, properties, body):
 
         video_temp_path = os.path.join(temp_dir, f"original_{video.id}.mp4")
 
-        with default_storage.open(video.video_file.name, 'rb') as remote_file:
-            with open(video_temp_path, 'wb') as local_file:
+        with default_storage.open(video.video_file.name, "rb") as remote_file:
+            with open(video_temp_path, "wb") as local_file:
                 shutil.copyfileobj(remote_file, local_file)
 
         print(f"Vídeo baixado para: {video_temp_path}")
@@ -44,13 +41,15 @@ def process_video(channel, method, properties, body):
         if file_size == 0:
             raise Exception("Arquivo de vídeo está vazio")
 
-        output_folder = os.path.join(temp_dir, 'extracted_frames')
+        output_folder = os.path.join(temp_dir, "extracted_frames")
         os.makedirs(output_folder, exist_ok=True)
 
         cap = cv2.VideoCapture(video_temp_path)
 
         if not cap.isOpened():
-            raise Exception(f"Não foi possível abrir o vídeo com OpenCV: {video_temp_path}")
+            raise Exception(
+                f"Não foi possível abrir o vídeo com OpenCV: {video_temp_path}"
+            )
 
         frame_count = 0
         while cap.isOpened():
@@ -106,8 +105,7 @@ def process_video(channel, method, properties, body):
                     }
                 ),
                 properties=pika.BasicProperties(
-                    content_type="application/json",
-                    delivery_mode=2
+                    content_type="application/json", delivery_mode=2
                 ),
             )
         except Exception as e:
@@ -118,8 +116,12 @@ def process_video(channel, method, properties, body):
         print(f"Error processing video: {e}")
         traceback.print_exc()
 
-        video_name = data.get("name", "") if 'data' in locals() else ""
-        email = data.get("email", "admin@admin.com") if 'data' in locals() else "admin@admin.com"
+        video_name = data.get("name", "") if "data" in locals() else ""
+        email = (
+            data.get("email", "admin@admin.com")
+            if "data" in locals()
+            else "admin@admin.com"
+        )
 
         channel.basic_publish(
             exchange="",
