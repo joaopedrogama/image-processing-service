@@ -23,6 +23,8 @@ class VideosConfig(AppConfig):
                 )
                 channel = connection.channel()
 
+                channel.queue_declare(queue="videos_failed", durable=True)
+
                 # Start consuming messages from the queue
                 channel.basic_consume(
                     queue="video_to_process",
