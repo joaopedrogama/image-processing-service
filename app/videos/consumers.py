@@ -21,6 +21,10 @@ def process_video(channel, method, properties, body):
             id=data["id"], name=data["name"], video_file=data["video_file"]
         )
 
+        # if video file is not a mp4 file, raise an exception
+        if not video.video_file.name.endswith(".mp4"):
+            raise Exception("O arquivo de vídeo deve ser um arquivo MP4")
+
         temp_dir = tempfile.mkdtemp()
         print(f"Diretório temporário criado: {temp_dir}")
 
@@ -99,9 +103,9 @@ def process_video(channel, method, properties, body):
                     {
                         "video_id": str(video.id),
                         "video_name": video.name,
-                        "status": "success",
                         "zip_url": zip_filename,
                         "email": data.get("email", "admin@admin.com"),
+                        "status": "done",
                     }
                 ),
                 properties=pika.BasicProperties(
@@ -128,10 +132,20 @@ def process_video(channel, method, properties, body):
             routing_key="videos_failed",
             body=json.dumps(
                 {
-                    "video_id": None,
                     "video_name": video_name,
-                    "status": "error",
                     "email": email,
+                    "reason": str(e),
+                }
+            ),
+            properties=pika.BasicProperties(delivery_mode=2),
+        )
+        channel.basic_publish(
+            exchange="",
+            routing_key="videos_processed",
+            body=json.dumps(
+                {
+                    "video_id": video.id,
+                    "status": "error",
                 }
             ),
             properties=pika.BasicProperties(delivery_mode=2),
