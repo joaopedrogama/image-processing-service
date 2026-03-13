@@ -1,39 +1,46 @@
-# Getting Started
+# Notification service
 
-1. **Install dependencies**:
+## Sobre o Projeto
 
-   ```bash
-   make install
-   ```
+O **Notification service** é um serviço que recebe notificações de sucesso ou falha de processamento de imagens. Ele é
+responsável por enviar emails caso falhe o processamento de uma imagem.
 
-2. **Run the development server**:
+## Comandos Básicos
 
-   ```bash
-   make runserver
-   ```
+Este projeto utiliza um `Makefile` para facilitar a execução de tarefas comuns. Abaixo estão os comandos disponíveis:
 
-3. **Install pre-commit hooks** (optional):
+### Execução
 
-   ```bash
-   make install-hooks
-   ```
+```bash
+make install-hooks  # Instala os hooks de pré-commit para garantir a qualidade do código
+make test           # Executa os testes da aplicação
+make run            # Inicia o servidor de desenvolvimento
+make ruff           # Verifica o código com o linter Ruff
+make fix            # Corrige problemas detectados pelo linter Ruff
+make format         # Formata o código automaticamente com o Ruff
+make coverage       # Gera uma cobertura de testes
+```
 
-4. **Lint the code** (optional):
+### Exemplo de Uso
 
-   ```bash
-   make lint
-   ```
+Para iniciar o projeto, execute:
 
-5. **Format the code** (optional):
-   ```bash
-   make format
-   ```
+```bash
+make install-hooks
+make run
+```
 
-## Features
+Para executar os testes:
 
-- Django project with pre-configured Black, isort, Flake8, and pre-commit hooks.
-- Ready-to-use template for your projects.
+```bash
+make test
+```
 
-## Create a new django project
+Para verificar e corrigir problemas no código:
 
-`django-admin startproject config . --template=../django-boot --name manage.py`
+```bash
+make ruff
+make fix
+```
+
+Consulte o `Makefile` para detalhes adicionais sobre cada comando.
