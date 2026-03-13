@@ -1,9 +1,8 @@
-# Notification service
+# Image service
 
 ## Sobre o Projeto
 
-O **Notification service** é um serviço que recebe notificações de sucesso ou falha de processamento de imagens. Ele é
-responsável por enviar emails caso falhe o processamento de uma imagem.
+O **Image service** é um serviço que processa imagens de vídeo e retorna para uma fila no RabbitMQ. Ele é responsável por extrair frames de vídeo, criar um ZIP com esses frames e enviar o ZIP para uma fila no RabbitMQ.
 
 ## Comandos Básicos
 
